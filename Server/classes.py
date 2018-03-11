@@ -1,6 +1,8 @@
 import socket
 import hashlib
 
+import _globals
+
 class Request():
     """Class to handle which requests are sent to my server."""
     def __init__(self, type):
@@ -12,16 +14,19 @@ class Request():
             
 class Server():
     """Simple server class."""
-    def __init__(self, port = 9079, pwd = 1234):
+    def __init__(self, port = _globals.PORT, pwd = 1234):
         """Initializes the server with a port number."""
         self.s = socket.socket()               # Initialize the socket
         self.host = '192.168.1.10'             # Host in static
         self.port = port                       # Initialize port, defaults to 9999
-        self.s.bind((self.host, self.port))    # Bind the socket
+        try:
+            self.s.bind((self.host, self.port)) # Bind the socket
+        except socket.error:
+            self.port += (self.port + 1) % 10000 # Try a different port 
         self.s.listen(5)                       # Start listening
         
         m = hashlib.sha256()                   # Start hashing
-        m.update(bytes(pwd))                          # Hash the password
+        m.update(bytes(pwd))                   # Hash the password
         self.pwd = m.hexdigest()               # Store hash as the password
         
         while True:
@@ -30,9 +35,12 @@ class Server():
             c.send("Connection successful".encode('utf-8'))
             
             # Now listen for a request
-            request = Request(c.recv(1024))    # This is the request we got
-            handleRequest(c, request)
-            
+            request = c.recv(1024)             # This is the request-code we got
+            print(object(request))
+            print(object(_globals.REQUESTDICT['talk']))
+            print(request == _globals.REQUESTDICT['talk'])
+            self.handleRequest(c, request)
+
             c.close()                          # Close the client when we are done
         
     def close(self):
@@ -41,5 +49,7 @@ class Server():
         
     def handleRequest(self, client, request):
         """Handles a reqest."""
-        if request.type == 'talk':
+        if request == 0: # We just want to talk
             client.send('You wanted to talk?'.encode('utf-8'))
+        else:
+            print('Unknown request')        
