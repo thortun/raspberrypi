@@ -7,8 +7,8 @@ def main():
     port = 9077                 # Reserve a port for your service.
 
     s.connect((host, port))
-    print(s.recv(1024))
-    s.send("Take this!")
+    print(s.recv(1024).decode('utf-8'))
+
 
     s.close()
     

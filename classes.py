@@ -4,9 +4,11 @@ class Request():
     """Class to handle which requests are sent to my server."""
     def __init__(self, requestType):
         """Initializes the instance."""
-        self.requestType = requestType          # Initialize the request type
+        self.requestType = requestType         # Initialize the request type
         
         
+        
+            
 class Server():
     """Simple server class."""
     def __init__(self, port = 9079):
@@ -23,7 +25,7 @@ class Server():
             c.send("Connection successful".encode('utf-8'))
             
             # Now listen for a request
-            dataReceived = c.recv(1024) # Store data in a vaiable
+            dataReceived = c.recv(1024)        # Store data in a vaiable
             while dataReceived:                # While we are still gethering data
                 print(dataReceived)            # For now, print it
                 dataReceived = c.recv(1024)    # Gather more data
