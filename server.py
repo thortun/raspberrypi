@@ -2,6 +2,7 @@ import socket
 import hashlib     # For some hashing
 
 import classes     # Local module containing classes
+import _globals
 
 def main():
     
