@@ -21,7 +21,7 @@ class Server():
         while True:
             c, addr = self.s.accept()          # Accept connections
             print("Accepted connection from", addr)
-            c.send("Connection successful".encode('utf-8'))
+            # c.send("Connection successful".encode('utf-8'))
             
             # Now listen for a request
             request = c.recv(1024)             # This is the request-code we got
@@ -29,13 +29,8 @@ class Server():
                 self.handleRequest(c, int(request))# Now handle what happens due to this request
             except ValueError: # This happens if the client does not request anything
                 print('Invalid request, client did not send any request?')
-            print(request)
 
             c.close()                          # Close the client when we are done
-        
-    def close(self):
-        """Closes the server."""
-        self.s.close() # Close the server down
         
     def handleRequest(self, client, request):
         """Handles a reqest."""
@@ -51,7 +46,6 @@ class Server():
                 data = fileID.read()            # Read the data
                 fileID.close()                  # Reading done, close down the file
             client.send(data.encode('utf-8'))   # Send the correctly encoded data
-            print(data.encode('utf-8'))
             
         else:
             print('Unknown request. Undefined request code.')
@@ -65,7 +59,7 @@ class Client:
         self.port = port           # Set the port
         self.s.connect((self.host, self.port)) # Connect to the server
         
-        print(self.s.recv(1024))   # Print whatever the server sends, such as confirmation
+        # print(self.s.recv(1024))   # Print whatever the server sends, such as confirmation
         
     def sendRequest(self, request):
         """Handles requests."""
@@ -75,7 +69,6 @@ class Client:
             pass
         elif request == _globals.REQUESTDICT['weather']: # Request weather data
             self.s.send(str(request).encode('utf-8'))    # Send the correct request
-            time.sleep(1)
             print('Retrieving weather data')             # Print a message
             data = self.s.recv(1024)                     # Receive the first data block
             weatherData = ''                             # Make a variable to store all the data
@@ -83,10 +76,10 @@ class Client:
                 weatherData += data                      # Append the new block to the weather data
                 data = self.s.recv(1024)                 # Store the next block of data
             print('Data retrieved successful!')          # Some more information printed
-            print(data)
+            print(weatherData)
             # Now append the data to a file, or make a new file and add the data
             filePath = '/home/pi/Documents/Python/Server/ClientData/weatherData.txt' # Path to save the data
-            with open(filePath, 'w') as fileID:
-                fileID.write(data)                       # Finally append the weather data
+            with open(filePath, 'a') as fileID:
+                fileID.write(weatherData)                       # Finally append the weather data
                 fileID.close()                           # And close the file
                 

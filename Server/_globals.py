@@ -6,4 +6,4 @@ REQUESTDICT['file'] = 1         # Request a file
 REQUESTDICT['weather'] = 2      # Request current weather data
 
 HOST = '192.168.1.10'
-PORT = 9099
+PORT = 9096
