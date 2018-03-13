@@ -59,17 +59,25 @@ class Client:
         
         print(self.s.recv(1024))  # Print whatever the server sends, such as confirmation
         
-    def sendRequest(self, request):
-        """Handles requests."""
+    def sendRequest(self, jsonRequest):
+        """Sends and handles a reuqest to the server. The request
+        should be in JSON format"""
         print("Requesting...")             # Some more printing
-        self.s.send(request)               # Sends the request to the server
-        dataReceived = ''                  # String to save the received data
-        tempData = self.s.recv(1024)       # Receive the data we are waiting for and store it in a temp string
-        while tempData:                    # While there is still data to be gathered
-            dataReceived += tempData       # Update the data we received
-            tempData = self.s.recv(1024)   # Query for more data
-        print(dataReceived)
-        print("Data received succesful!")  # Some printing
+        query = jsonRequest["request"]     # Save the query because we are going to use it a lot
+        self.s.send(json.dumps(jsonRequest))#Sends the request to the server as a JSON string
+        # Now handle what happens if we are to receive any information
+        if query == "file":                # If we queried a file
+            dataReceived = ''                  # String to save the received data
+            tempData = self.s.recv(1024)       # Receive the data we are waiting for and store it in a temp string
+            while tempData:                    # While there is still data to be gathered
+                dataReceived += tempData       # Update the data we received
+                tempData = self.s.recv(1024)   # Query for more data
+            print("Data received succesful!")  # Some printing
+            # Now append the data to datafile we have or create a new one
+            filename = jsonRequest["specifier"]# This is the filename the client requested
+            with open("/home/pi/Documents/Python/Server/ClientData/" + filename, "a") as fileID:
+                fileID.write(dataReceived)     # Append the data to the file
+                fileID.close()                 # Close the file when we are done
 
 
 

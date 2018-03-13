@@ -4,51 +4,6 @@ import re # For handeling the hyperref-mess
 
 from math import ceil
 
-def fix_line(line):
-	"""Replaces '%' with '\%' and '\n' with '' so latex doesn't cry"""
-	line = line.replace('%', '\%')
-	line = line.replace('\n', '')
-	return line
-
-def clean_line(line):
-	"""Crop all HTML-shit from a line."""
-	# Firstly, remove newlines
-	line = line.replace("\n", " ") 
-	line = line.replace("\t", " ")
-	line = line.replace("<p>", "")
-	line = line.replace("</p>", "")
-	line = line.replace("<i>", "")
-	line = line.replace("</i>", "")
-	line = line.replace("<h3>", "")
-	line = line.replace("</h3>", "")
-	line = line.replace("<h4>", "")
-	line = line.replace("</h4>", "")
-	line = line.replace("<strong>", "")
-	line = line.replace("</strong>", "")
-	line = line.replace("<em>", "")
-	line = line.replace("</em>", "")
-	line = line.replace("</a>", "")
-	line = line.replace("<a>", "")	
-	line = line.replace(">", "")
-	# Remove excessive spaces
-	line = line.replace("  ", " ")
-	# Fix some comma-mistakes
-	line = line.replace(", ,", ", ")
-	return line
-
-def crop_whites(line):
-	"""Crops the whitespaces at the beginning and end of a line"""
-	# Count from the start
-	if len(line) == 0:
-		return ""
-	while line[0] == " ":
-		line = line[1:]
-	# From the end
-	while line[len(line) - 1] == " ":
-		line = line[:-1]
-
-	return line
-
 def typeset_line(line):
 	"""Typesets correctly from HTML to LaTeX. For instance
 	text between <strong> and </strong> becomes text inside
@@ -210,7 +165,7 @@ def generate_HTML_string(url):
 	req = urllib2.Request(url, headers=hdr)
 
 	try:
-	    page = urllib2.urlopen(req)
+	    page = urllib2.urlopen(req)      # Send a request
 	except urllib2.HTTPError, e:
 	    print e.fp.read()
 
@@ -239,4 +194,49 @@ def replace(line):
 	line = line.replace(':', '')
 	line = line.replace(',', '')
 	line = line.replace('/', '_or_')
+	return line
+    
+def fix_line(line):
+	"""Replaces '%' with '\%' and '\n' with '' so latex doesn't cry"""
+	line = line.replace('%', '\%')
+	line = line.replace('\n', '')
+	return line
+
+def clean_line(line):
+	"""Crop all HTML-shit from a line."""
+	# Firstly, remove newlines
+	line = line.replace("\n", " ") 
+	line = line.replace("\t", " ")
+	line = line.replace("<p>", "")
+	line = line.replace("</p>", "")
+	line = line.replace("<i>", "")
+	line = line.replace("</i>", "")
+	line = line.replace("<h3>", "")
+	line = line.replace("</h3>", "")
+	line = line.replace("<h4>", "")
+	line = line.replace("</h4>", "")
+	line = line.replace("<strong>", "")
+	line = line.replace("</strong>", "")
+	line = line.replace("<em>", "")
+	line = line.replace("</em>", "")
+	line = line.replace("</a>", "")
+	line = line.replace("<a>", "")	
+	line = line.replace(">", "")
+	# Remove excessive spaces
+	line = line.replace("  ", " ")
+	# Fix some comma-mistakes
+	line = line.replace(", ,", ", ")
+	return line
+
+def crop_whites(line):
+	"""Crops the whitespaces at the beginning and end of a line"""
+	# Count from the start
+	if len(line) == 0:
+		return ""
+	while line[0] == " ":
+		line = line[1:]
+	# From the end
+	while line[len(line) - 1] == " ":
+		line = line[:-1]
+
 	return line
