@@ -1,8 +1,8 @@
-import socket
-import hashlib
-import json
+import socket         # To use sockets
+import hashlib        # For some hashing
+import json           # JSON usability
 
-import _globals
+import _globals       # Global variables
         
 class Server():
     """Simple server class."""
