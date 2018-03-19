@@ -1,5 +1,6 @@
 import random
 import math
+import time
 
 def gcd(a, b):
     """Calculate the Greatest Common Divisor of a and b.
@@ -61,16 +62,16 @@ def legandre(a, b):
 	else:
 		return 0        # Legandry symbol of 0 is 0
 
-def primalityTestGuess(p, tolerence = -10):
+def primalityTestGuess(p, tolerance = -6):
 	"""GUESSES whether p is a prime using the
 	Legandre symbol.
 
-	tolerence is the log of the probability we want that
+	tolerance is the log of the probability we want that
 	p is prime. That is, stop when we are certain that p
-	is prime within 2^tolerence
+	is prime within 2^tolerance
 	"""
 	acumulatedProbability = 1      # Starting probability is 1 - acumulatedProbability
-	while acumulatedProbability > 2**tolerence: # While we are still uncertain
+	while acumulatedProbability > 2**tolerance: # While we are still uncertain
 		k = random.randint(0, p)   # Pick a random number from the group
 		legSymbol = legandre(k, p) # Calculate legandre synbol
 		powerVal = pow(k, (p - 1)/2, p) # Calculate the power
@@ -86,23 +87,30 @@ def primalityTestGuess(p, tolerence = -10):
 			return False           # However, if these are not equal we are certain that p is NOT prime
 	# If we have not fond evedence (legandre != power),
 	# return the GUESS which is that p is prime. 
-	# We are certain to within 2^tolerence of this
+	# We are certain to within 2^tolerance of this
 	return True
 
 def primalityTest(p):
-	"""Returns whether p is prime or not, no questions asked."""
-	for n in xrange(2, int(math.ceil(math.sqrt(p)))):
-		if p % n == 0: # if it is a divisor, return false
+	"""Primality testing algrithm, deterministic.
+	Ripped from wikipedia, it is black magic.
+	"""
+	if p <= 1:
+		return False
+	elif p <= 3:
+		return True
+	elif p % 2 == 0 or p % 3 == 0:
+		return False
+	i = 5
+	while i*i <= p:
+		if p % i == 0 or p % (i + 2) == 0:
 			return False
-	# Exiting the for-loop means no there exists no divisors of p
+		i += 6
 	return True
 
-def findPrime(lowerBound, upperBound):
+def findPrime(lowerBound, upperBound, tolerance = -6):
 	"""Finds a prime in the interval [lowerBound, upperBound]."""
 	while True: # Test indefinatily
-		candidate = random.randint(lowerBound, upperBound + 1)   # Pick a random candidate
-		if primalityTestGuess(candidate):                        # Make an educated guess whether it is prime
+		candidate = random.randint(lowerBound, upperBound + 1)   # Pick a random candidate within bounds
+		if primalityTestGuess(candidate, tolerance):             # Make an educated guess whether it is prime
 			if primalityTest(candidate):                         # If it also passes rigorous test:
 				return candidate                                 # Return the prime
-
-print findPrime(10**13, 10**14)
