@@ -1,6 +1,5 @@
 import random
 import math
-import time
 
 def gcd(a, b):
     """Calculate the Greatest Common Divisor of a and b.
