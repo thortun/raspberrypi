@@ -9,8 +9,6 @@ def main():
     
     # Make a server
     classes.Server()
-    
-    
 
 if __name__ == '__main__':
     main()

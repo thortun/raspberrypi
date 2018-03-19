@@ -47,7 +47,6 @@ class Server():
         except IOError: # File could not be opened
             print(IOError) # Print the error
                     
-
 class Client:
     """Client class to make handeling various requests easier."""
     def __init__(self, port = _globals.PORT):
