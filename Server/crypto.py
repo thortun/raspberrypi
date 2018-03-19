@@ -1,7 +1,6 @@
-import random
-import math
+# Some simple cryptography algorithms.
 
-import cryptoUtilities as cu
+import cryptoUtilities as cu # Local module of utility functions used here
 
 def RSAKeygen():
 	"""Key generatoin algorithm for RSA."""
@@ -25,4 +24,4 @@ def RSADecrypt(c, dk):
 	"""Decrypts the message. Using the touple dk = (n, d)."""
 	return pow(c, dk[1], dk[0])
 
-print RSAKeygen()[0][0]
+ek, dk = RSAKeygen()
