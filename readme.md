@@ -6,6 +6,8 @@ A small library of methods to help make scraping easy. Currently can only handle
 
 <h2> Server </h2>
 Some server functionality to set up the Pi as a server. As it scrapes various websites for interesting information, it will compress it untill it receive a request to send it to another machine where we can store information.
+<h3> Cryptography </h3>
+Implementation of simple symetric and public key cryptography schemes. Also contains some interesting untilities used such as primality testing.
 
 <h2> Compression </h2>
 Me messing around with compression.
