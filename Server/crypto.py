@@ -113,7 +113,3 @@ def findPrime(lowerBound, upperBound, tolerance = -6):
 		if primalityTestGuess(candidate, tolerance):             # Make an educated guess whether it is prime
 			if primalityTest(candidate):                         # If it also passes rigorous test:
 				return candidate                                 # Return the prime
-
-def branchFoo(a):
-	print a
-	return None
