@@ -11,6 +11,21 @@ def gcd(a, b):
         a, b = b, a%b
     return a
 
+def egcd(b, a):
+    x0, x1, y0, y1 = 1, 0, 0, 1
+    while a != 0:
+        q, b, a = b // a, a, b % a
+        x0, x1 = x1, x0 - q * x1
+        y0, y1 = y1, y0 - q * y1
+    return  b, x0, y0
+
+def modInv(b, n):
+	"""Calculates the modular inverse of b modulo n."""
+	g, x, _ = egcd(b, n)
+	if g == 1: # If the GCD is 1 the inverse exists
+		return x % n # Return the value
+	return None # If g is not 1 then we return None because it does not exists
+
 def legandre(a, b):
 	"""Calculate the legandre symbol of a over b.
 
@@ -113,3 +128,26 @@ def findPrime(lowerBound, upperBound, tolerance = -6):
 		if primalityTestGuess(candidate, tolerance):             # Make an educated guess whether it is prime
 			if primalityTest(candidate):                         # If it also passes rigorous test:
 				return candidate                                 # Return the prime
+
+def RSAKeygen():
+	"""Key generatoin algorithm for RSA."""
+	lowerBound = 10**3
+	p, q = findPrime(lowerBound, lowerBound*10), findPrime(lowerBound, lowerBound*10)
+	s = (p - 1)*(q - 1)
+
+
+	n = p*q                      # Secret key
+	e = findPrime(10**2, 10**3)  # Chose a public power
+	d = modInv(e, s)             # Chose the modular inverse
+
+	return (n, e), (n, d)        # Return appropriate keys
+
+def RSAEncrypt(m, ek):
+	"""Encrypts the message m by using the touple
+	ek = (n, e).
+	"""
+	return pow(m, ek[1], ek[0]) # Do it
+
+def RSADecrypt(c, dk):
+	"""Decrypts the message. Using the touple dk = (n, d)."""
+	return pow(c, dk[1], dk[0])
