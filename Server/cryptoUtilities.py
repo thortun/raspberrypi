@@ -121,10 +121,10 @@ def primalityTest(p):
 		i += 6
 	return True
 
-def findPrime(lowerBound, upperBound, tolerance = -6):
+def findPrime(lowerBound, upperBound, tolerance = -12):
 	"""Finds a prime in the interval [lowerBound, upperBound]."""
 	while True: # Test indefinatily
 		candidate = random.randint(lowerBound, upperBound + 1)   # Pick a random candidate within bounds
 		if primalityTestGuess(candidate, tolerance):             # Make an educated guess whether it is prime
-			if primalityTest(candidate):                         # If it also passes rigorous test:
-				return candidate                                 # Return the prime
+			#if primalityTest(candidate):                         # If it also passes rigorous test:
+			return candidate                                 # Return the prime
