@@ -1,5 +1,6 @@
 import random
 import math
+import numpy
 
 def gcd(a, b):
     """Calculate the Greatest Common Divisor of a and b.
@@ -128,3 +129,14 @@ def findPrime(lowerBound, upperBound, tolerance = -12):
 		if primalityTestGuess(candidate, tolerance):             # Make an educated guess whether it is prime
 			#if primalityTest(candidate):                         # If it also passes rigorous test:
 			return candidate                                 # Return the prime
+
+def posFloatMod(num, mod):
+	"""Calculates the modulo of a floating point
+	number such that it is positive.
+	"""
+	num = num % mod
+	while num < 0:
+		num += mod
+	return num
+
+	
