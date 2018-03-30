@@ -21,32 +21,40 @@ class Server():
             c, addr = self.s.accept()          # Accept connections
             # Run diffie hellman
             self.DHSecret = crypto.DHProtocol(c)
-            print(self.DHSecret)
             print("Accepted connection from", addr)
             
             # Now listen for a request
-            # request = c.recv(1024)             # This is the request-code we got
-            # self.handleRequest(c, request)     # Now handle what happens due to this request
+            request = c.recv(1024)             # This is the request-code we got
+            self.handleRequest(c, request)     # Now handle what happens due to this request
 
-            c.close()                            # Close the client when we are done
+            c.close()                          # Close the client when we are done
         
     def handleRequest(self, client, request):
         """Handles a reqest. The request recieved is in JSON format"""
-        jsonRequest = json.loads(request)      # Make it into a dictionary
-        query = jsonRequest["request"]         # Save this because we are going to use it a lot
-        if query == "file":                    # If we are asked to send a file, do that
-            filename = jsonRequest["specifier"]# The filename should be specified
+        jsonRequest = json.loads(request)       # Make it into a dictionary
+        query = jsonRequest["request"]          # Save this because we are going to use it a lot
+        if query == "file":                     # If we are asked to send a file, do that
+            specifiers = jsonRequest["specifiers"]# Different specifications
+            filename = specifiers["filename"]
             print("Client requested file " + filename) # Print this
-            self.sendFile(client, filename)    # Call the method with the correct specifier
+            self.sendFile(client, specifiers)   # Call the method with specifiers
         
-    def sendFile(self, client, filename):
-        """Sends the file named filename to the client."""
+    def sendFile(self, client, specifiers):
+        """Sends the file named 'filename' to the client."""
+        filename = specifiers["filename"]   # The filename should be specified
+        cleanFile = specifiers["cleanFile"] # Whether or not to clean the file
         try: # Try opening the file
-            with open("/home/pi/Documents/Python/Server/Data/" + filename) as fileID:
-                client.send(fileID.read()) # Send the data contained in the file
-                fileID.close()
-        except IOError: # File could not be opened
-            print(IOError) # Print the error
+            with open("/home/pi/Documents/Python/Server/Data/" + filename, 'r+') as fileID:
+                contents = fileID.read()   # Read the data from the file
+                payload = {"contents" : contents, "error" : {"code": 0, "errMessage" : ""}} # Make the payload
+                client.send(json.dumps(payload)) # Send the payload
+                if cleanFile:
+                    fileID.truncate(0)     # Clean the file from the start, this also closes the file
+                else:                      # If we are not truncating, just close
+                    fileID.close()         # Close it up
+        except IOError, e:    # File could not be opened
+            payload = {"contents": "", "error" : {"code" : 2, "errMessage":  "[Errno 2] No such file in directory"}}
+            print(e) # Print the error
                     
 class Client:
     """Client class to make handeling various requests easier."""
@@ -59,13 +67,11 @@ class Client:
         
         self.DHSecret = crypto.DHProtocol(self.s) # Run the DH protocol
         
-        print(self.DHSecret)
-        
     def sendRequest(self, jsonRequest):
         """Sends and handles a requests to the server. The request
-        should be in JSON format"""
-        print("Requesting...")             # Some more printing
-        query = jsonRequest["request"]     # Save the query because we are going to use it a lot
+        should be in JSON format, NOT a string."""
+        print("Requesting...")              # Some more printing
+        query = jsonRequest["request"]      # Save the query because we are going to use it a lot
         self.s.send(json.dumps(jsonRequest))#Sends the request to the server as a JSON string
         # Now handle what happens if we are to receive any information
         if query == "file":                     # If we queried a file
@@ -74,9 +80,14 @@ class Client:
             while tempData:                     # While there is still data to be gathered
                 dataReceived += tempData        # Update the data we received
                 tempData = self.s.recv(1024)    # Query for more data
-            print("Data received succesful!")   # Some printing
+            print("Data received succesfully!") # Some printing
             # Now append the data to datafile we have or create a new one
-            filename = jsonRequest["specifier"] # This is the filename the client requested
-            with open("/home/pi/Documents/Python/Server/ClientData/" + filename, "a") as fileID:
-                fileID.write(dataReceived)      # Append the data to the file
-                fileID.close()                  # Close the file when we are done
+            payload = json.loads(dataReceived)  # Make the data JSON format
+            error = payload["error"]    # Extract the error code
+            if error["code"] == 0:      # If there is no error
+                filename = jsonRequest["specifiers"]["filename"] # This is the filename the client requested
+                with open("/home/pi/Documents/Python/Server/ClientData/" + filename, "a") as fileID:
+                    fileID.write(payload["contents"])            # Append the data to the file
+                    fileID.close()              # Close the file when we are done
+            elif error["code"] == 2:            # File not found
+                print(error["errMessage"])         # There was an error, print what happens now

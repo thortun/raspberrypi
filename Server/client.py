@@ -8,6 +8,9 @@ import _globals
 def main():
 
     c = classes.Client()
-
+    request = {"request" : "file", "specifiers": {"filename" : "weatherData.txt", "cleanFile" : False}}
+    c.sendRequest(request)
+    
+    
 if __name__ == '__main__':
     main()

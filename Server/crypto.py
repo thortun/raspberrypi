@@ -1,11 +1,14 @@
 # Some simple cryptography algorithms.
 import time
-import cryptoUtilities as cu # Local module of utility functions used here
 import numpy as np
+import json
+
+import _globals              # Global variables
+import cryptoUtilities as cu # Local module of utility functions used here
 
 def DHProtocol(server):
     """The vanilla DH protocol between us and the server."""
-    a = rand.randint(0, _globals.PRIME)    # Select a random number in the group
+    a = cu.random.randint(0, _globals.PRIME)    # Select a random number in the group
     x = pow(_globals.GENERATOR, a, _globals.PRIME) # Calculate the message
     payload = json.dumps({"DHMsg": x})     # Take the DH_MSG into a JSON-format
     server.send(payload)                   # Send the payload
@@ -35,7 +38,9 @@ def RSAEncrypt(m, ek):
 	return pow(m, ek[1], ek[0]) # Do it
 
 def RSADecrypt(c, dk):
-	"""Decrypts the message. Using the touple dk = (n, d)."""
+	"""Decrypts the message. Using the touple
+        dk = (n, d).
+        """
 	return pow(c, dk[1], dk[0])
 
 def timeRSAKeygen(bitsize):

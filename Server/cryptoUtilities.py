@@ -85,16 +85,16 @@ def primalityTestGuess(p, tolerance = -6):
 	p is prime. That is, stop when we are certain that p
 	is prime within 2^tolerance
 	"""
-	acumulatedProbability = 1      # Starting probability is 1 - acumulatedProbability
+	acumulatedProbability = 1.0        # Starting probability is 1 - acumulatedProbability
 	while acumulatedProbability > 2**tolerance: # While we are still uncertain
 		k = random.randint(0, p)   # Pick a random number from the group
-		legSymbol = legandre(k, p) # Calculate legandre synbol
+		legSymbol = legandre(k, p) # Calculate legandre symbol
 		powerVal = pow(k, (p - 1)/2, p) # Calculate the power
 		# By using 'ordinary' modulo, we are not getting an answer of -1, so fix this
 		# powerVal being p - 1 is equivalent to it being -1 in the group
 		if powerVal == p - 1: 
 			powerVal = powerVal - p		     
-		if legSymbol == powerVal:       # For prime p, these values are equal
+		if legSymbol == powerVal:       # For prime p, these values are ALWAYS equal
 			# We have probability about 0.5 that this is the case for non-prime aswell
 			# so update the accumulated probability by halving it
 			acumulatedProbability *= 0.5 
