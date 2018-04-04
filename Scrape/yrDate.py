@@ -1,4 +1,4 @@
-
+from calendar import isleap  # Import the method for finding leap year
 
 class yrDate():
 	"""Class to represent yr-date."""
@@ -74,9 +74,57 @@ class yrDate():
 	def __gt__(self, rhs):
 		return (self.__ge__(rhs) and not self.__eq__(rhs))
 
+	def __add__(self, rhsINT):
+		"""Adds an int to the date."""
+		day, month, year = int(self.day), int(self.month), int(self.year) # Intify
+		for _ in xrange(0, rhsINT): # Add one date at a time
+			if isLastDayOfYear(day, month, year): # If we are on the last day of the year
+				year += 1                 # Increment the year
+				month = 1                 # Reset month
+				day = 1	                  # Reset day
+			elif isLastDayOfMonth(day, month, year): # If it is the last day of a month but NOT a year
+				month += 1                # Increment month 
+				day = 1                   # Reset day
+			else:                         # If it is just an ordinary day
+				day += 1                  # Increment the day
+		# We have to do some padding work to make sense of this
+		day = str(day)                    # Make into string
+		month = str(month)                # Make into string
+		year = str(year)                  # Make into string
+		if len(day) == 1:                 # If we have made the day-string of length 1
+			day = '0' + day               # Do some padding
+		if len(month) == 1:               # If the month string is of length 1
+			month = '0' + month           # Do some padding
+		return yrDate(day + ':' + month + ':' + year) # Return a new date
+
 	def hasHourTime(self):
 		"""Checks if the date has hourTime data."""
 		if self.hourInterval[0] != '':
 			return True
 		else:
 			return False
+
+def isLastDayOfMonth(day, month, year):
+	"""Checks whether a day is the last day 
+	of a month given the year.
+	"""
+	day, month, year = int(day), int(month), int(year) # Intify just in case
+	if month in [1, 3, 5, 7, 8, 10, 12]: # Check months with 31 days
+		if day == 31:                    # If we are on the last day of the month
+			return True                  # This is the last day of the month
+	elif month in [4, 6, 9, 11]:         # Check months with 30 days
+		if day == 30:                    # If this is the last day
+			return True                  # Return True
+	elif month == 2:                     # Special case for February
+		if isleap(year):                 # On a leap year,
+			if day == 29:                # If we are on the last day
+				return True              # Return True
+		else:                            # If it is not leap, check for last day
+			if day == 28:                # If it is the last day
+				return True              # Return True
+                                         # Now there are no more cases to check
+	return False                         # So return False
+
+def isLastDayOfYear(day, month, year):
+	"""Checks if we are on the last day of the year."""
+	return int(day) == 31 and int(month) == 12

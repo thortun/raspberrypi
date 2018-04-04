@@ -71,7 +71,9 @@ def scrapeYr(url, filename):
 url = 'https://www.yr.no/sted/Norge/Trøndelag/Trondheim/Trondheim/'
 scrapeYr(url, 'data.txt')
 
-
+date = yrDate.yrDate('31.05.1977')
+print date
+print date + 13032
 
 # print time.gmtime()
 # print (time.mktime(time.gmtime()))
