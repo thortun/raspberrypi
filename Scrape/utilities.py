@@ -4,42 +4,42 @@ import re # For handeling the hyperref-mess
 
 from math import ceil
 
-def typeset_line(line):
-	"""Typesets correctly from HTML to LaTeX. For instance
-	text between <strong> and </strong> becomes text inside
-	\\textbf{}."""
+def typeset_line(line)
+    """Typesets correctly from HTML to LaTeX. For instance
+    text between <strong> and </strong> becomes text inside
+    \\textbf{}."""
 
-	while '<strong>' in line and '</strong>' in line:
-		start = line.find("<strong>")
-		end = line.find("</strong>")
-		# When we have the start and end of the things, split the string and typeset in between
-		before_typeset = line[:start]
-		between_typeset = line[(start + 8):end]
-		after_typeset = line[(9 + end):]
-		# Typeset
-		line = before_typeset + "\\textbf{" + between_typeset + "}" + after_typeset
+    while '<strong>' in line and '</strong>' in line:
+    	start = line.find("<strong>")
+     	end = line.find("</strong>")
+    	# When we have the start and end of the things, split the string and typeset in between
+    	before_typeset = line[:start]
+    	between_typeset = line[(start + 8):end]
+    	after_typeset = line[(9 + end):]
+    	# Typeset
+    	line = before_typeset + "\\textbf{" + between_typeset + "}" + after_typeset
 
-	while '<em>' in line and '</em>' in line:
-		start = line.find("<em>")
-		end = line.find("</em>")
-		# When we have the start and end of the things, split the string and typeset in between
-		before_typeset = line[:start]
-		between_typeset = line[(start + 3):end]
-		after_typeset = line[(end + 4):]
-		# Typeset
+    while '<em>' in line and '</em>' in line:
+    	start = line.find("<em>")
+        end = line.find("</em>")
+    	# When we have the start and end of the things, split the string and typeset in between
+    	before_typeset = line[:start]
+    	between_typeset = line[(start + 3):end]
+    	after_typeset = line[(end + 4):]
+    	# Typeset
 
-		line = before_typeset + "\\textit{" + between_typeset + "}" + after_typeset
-	# Because we replaced '/' with '_or_' to make the file handeling behave correctly
-	# we need to revert this to make the spell look right again
-	line = line.replace('_or_', '/')
-	# And some more minor changes like that fact that % is the comment symbol in LaTeX
-	line = line.replace('%', '\%')
-	line = line.replace('#', '')
-	# As of writing this, there is a mistake on the website, where 'Telekenesis' is
-	# not done right in the HTML-code. Therefore we need to do this strange replacement
-	line = line.replace('._**', '</strong>')
-	line = line.replace('**', '<strong>')
-	return line
+    	line = before_typeset + "\\textit{" + between_typeset + "}" + after_typeset
+    # Because we replaced '/' with '_or_' to make the file handeling behave correctly
+    # we need to revert this to make the spell look right again
+    line = line.replace('_or_', '/')
+    # And some more minor changes like that fact that % is the comment symbol in LaTeX
+    line = line.replace('%', '\%')
+    line = line.replace('#', '')
+    # As of writing this, there is a mistake on the website, where 'Telekenesis' is
+    # not done right in the HTML-code. Therefore we need to do this strange replacement
+    line = line.replace('._**', '</strong>')
+    line = line.replace('**', '<strong>')
+    return line
 
 def remove_hyperref2(line):
 	"""Removes hyperref HTML-code and replaces it 
