@@ -238,5 +238,4 @@ def crop_whites(line):
 	# From the end
 	while line[len(line) - 1] == " ":
 		line = line[:-1]
-
 	return line
