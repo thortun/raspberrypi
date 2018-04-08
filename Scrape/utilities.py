@@ -4,7 +4,7 @@ import re # For handeling the hyperref-mess
 
 from math import ceil
 
-def typeset_line(line)
+def typeset_line(line):
     """Typesets correctly from HTML to LaTeX. For instance
     text between <strong> and </strong> becomes text inside
     \\textbf{}."""
